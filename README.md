@@ -2,404 +2,254 @@
 
 ### Your skills crossed borders. Your recognition should too.
 
-**TalentPath AI** is an AI-assisted career and skills recognition platform designed to help skilled refugees and displaced professionals organize their experience, document their competencies, prepare for Recognition of Prior Learning (RPL), and explore professional pathways in Kenya.
-
-Built for the Power Learn Project (PLP) hackathon theme:
-
-**Unlocking Displaced Talent: Pathways for Skilled Refugees**
+**An AI-assisted skills recognition and career pathways platform for skilled refugees and displaced professionals in Kenya.**
 
 <p align="center">
   <a href="https://talentpath-ai-322874005096.europe-west2.run.app/">
-    <strong>🚀 Launch Live Application</strong>
+    <strong>🚀 VIEW LIVE APPLICATION</strong>
   </a>
   &nbsp; | &nbsp;
   <a href="https://github.com/thesonofbillionairemom-netizen/TalentPathAI">
-    <strong>💻 View Source Code</strong>
+    <strong>💻 SOURCE CODE</strong>
   </a>
 </p>
 
 ---
 
-## Table of Contents
+## 🌍 About the Project
 
-- [The Problem](#the-problem)
-- [Our Solution](#our-solution)
-- [Core Features](#core-features)
-- [How It Works](#how-it-works)
-- [Technology Stack](#technology-stack)
-- [Application Architecture](#application-architecture)
-- [Getting Started](#getting-started)
-- [Environment Configuration](#environment-configuration)
-- [Demo Experience](#demo-experience)
-- [Responsible AI and Data Protection](#responsible-ai-and-data-protection)
-- [Project Scope and Limitations](#project-scope-and-limitations)
-- [Future Development](#future-development)
-- [Hackathon Alignment](#hackathon-alignment)
-- [Author](#author)
-- [License](#license)
+TalentPath AI addresses a major challenge facing skilled refugees and displaced professionals: their skills, qualifications, and professional experience may not be easily recognised when they move to a new country.
 
----
+A professional may have years of engineering, healthcare, construction, ICT, or other experience but struggle to demonstrate their abilities because of missing documents, unfamiliar recognition systems, or limited professional networks.
 
-## The Problem
+TalentPath AI provides an AI-assisted platform to help users organise their professional evidence, identify skills, understand potential recognition pathways, and prepare for employment opportunities.
 
-Many refugees and displaced professionals have valuable academic qualifications, technical competencies and years of professional experience.
+**Our mission:** Help skilled people turn their experience into visible evidence and clearer pathways towards professional inclusion.
 
-However, crossing borders can make it difficult to:
+## 🎯 The Problem We Address
 
-- Demonstrate qualifications obtained in another country.
-- Provide supporting documents when original records are unavailable.
-- Understand local qualification recognition procedures.
-- Navigate professional licensing and employment requirements.
-- Access suitable jobs, mentorship and professional networks.
-- Translate previous experience into opportunities in a new labour market.
+Skilled displaced professionals can encounter:
 
-As a result, skilled individuals may remain underemployed despite possessing valuable capabilities.
+- Difficulty proving qualifications obtained in another country.
+- Missing or inaccessible academic and employment documents.
+- Limited recognition of practical skills and work experience.
+- Complex qualification recognition and licensing processes.
+- Difficulty understanding local employment readiness requirements.
+- Limited access to mentors, employers, and professional networks.
 
-## Our Solution
+## 💡 Our Solution
 
-TalentPath AI provides a digital pathway for organizing professional experience, identifying transferable skills, strengthening supporting evidence and navigating relevant recognition and employment preparation processes.
+TalentPath AI brings several career preparation activities together in one platform.
 
-The platform brings together AI-assisted assessment, document management, recognition guidance, career opportunities and professional portfolio preparation in one experience.
+The platform supports users through a journey:
 
-**Our goal:** Help displaced professionals make their existing skills more visible, understandable and actionable.
+**PROFILE → EVIDENCE → AI ASSESSMENT → RECOGNITION GUIDANCE → CAREER PATHWAYS**
 
----
+It is designed to make professional information easier to organise and recognition pathways easier to understand.
 
-## Core Features
+## ✨ Key Platform Capabilities
 
-### 1. Professional Profile Management
+### 1. Professional Profile
+Organise professional background, experience, qualifications, and career interests in one place.
 
-Candidates can organize their professional information, including:
-
-- Personal and professional profile details.
-- Academic qualifications.
-- Employment history.
-- Technical and transferable competencies.
-- Career interests and professional goals.
-
-### 2. Document and Evidence Centre
-
-A dedicated space for organizing supporting professional records.
-
-Supported document formats documented by the application include:
-
-- PDF
-- PNG
-- JPG
-- TXT
-- DOCX
-
-The application documents a maximum upload size of 10 MB per file.
+### 2. Evidence Organisation
+Upload and organise supporting documents and professional evidence.
 
 ### 3. AI-Assisted Skills Assessment
+Use AI-assisted analysis to identify potential competencies, organise evidence, and highlight missing information.
 
-Gemini-powered analysis is designed to help:
+### 4. Recognition Pathway Guidance
+Explore potential qualification recognition and Recognition of Prior Learning (RPL) preparation pathways.
 
-- Identify technical and transferable skills.
-- Analyse professional experience and supporting evidence.
-- Highlight potential evidence gaps.
-- Suggest career directions.
-- Recommend practical next steps.
+### 5. Career Readiness
+Identify documentation gaps and prepare for relevant employment and professional requirements.
 
-The assessment distinguishes between user-provided information, evidence-extracted information and AI-generated suggestions.
+### 6. Professional Portfolio
+Prepare a structured professional portfolio that can support career and recognition discussions.
 
-When live AI analysis is unavailable, the application can fall back to clearly labelled demonstration output.
+> Feature availability and AI service performance may vary. Demonstration data is illustrative and must not be treated as verified personal information or live employment opportunities.
 
-### 4. Recognition Pathway Navigator
+## 🧭 Three Innovation Pillars
 
-Helps candidates prepare for relevant qualification recognition and Recognition of Prior Learning (RPL) pathways.
-
-The platform references relevant Kenyan institutions and resources, including:
-
-- Kenya National Qualifications Authority (KNQA).
-- Technical and Vocational Education and Training Authority (TVETA).
-- National Industrial Training Authority (NITA).
-- Engineers Board of Kenya (EBK).
-- Kenya National Examinations Council (KNEC).
-- Department of Refugee Services (DRS).
-
-### 5. Legal and Financial Readiness
-
-Provides a structured place for exploring practical preparation areas related to:
-
-- Work authorisation.
-- Employment and regulatory requirements.
-- Financial inclusion.
-- Banking and payment access.
-
-### 6. Opportunities and Professional Connections
-
-Designed to connect candidate profiles with relevant pathways, including:
-
-- Employment opportunities.
-- Mentorship.
-- Professional training.
-- Skills bridging and apprenticeship opportunities.
-
-Demonstration listings are clearly identified as sample data and should not be interpreted as confirmed vacancies or formal partnerships.
-
-### 7. Professional Portfolio and PDF Export
-
-Candidates can prepare a structured portfolio summarizing their skills, qualifications, evidence and professional experience.
-
-The application uses jsPDF for browser-based PDF generation.
-
-### 8. Privacy and Consent Controls
-
-The platform includes role-based experiences and consent-oriented controls intended to protect candidate information and govern access to shared professional profiles.
-
----
-
-## How It Works
-
-The intended candidate journey is:
-
-1. **Create a profile** — Enter professional background, qualifications and career interests.
-2. **Organize evidence** — Add relevant supporting documents and professional records.
-3. **Assess skills** — Run an AI-assisted assessment to identify competencies and potential evidence gaps.
-4. **Explore recognition pathways** — Review relevant Kenyan recognition and RPL preparation guidance.
-5. **Discover opportunities** — Explore relevant employment, mentorship and training pathways.
-6. **Prepare a portfolio** — Generate a structured professional PDF portfolio.
-
----
-
-## Technology Stack
-
-| Layer | Technologies |
+| Pillar | Focus |
 |---|---|
-| Frontend | React 19, TypeScript |
-| Build tooling | Vite |
-| Styling | Tailwind CSS v4 |
-| UI and animation | Lucide React, Motion |
-| Data visualization | Recharts |
-| PDF generation | jsPDF |
-| Backend | Node.js, Express |
-| Database | SQLite with better-sqlite3 |
-| File handling | Multer |
-| Password hashing | Node.js crypto / scrypt |
-| AI integration | Google Gemini API using @google/genai |
-| Deployment | Google Cloud Run |
+| Credential Recognition & Skills Validation | Organising qualifications, practical skills, and supporting evidence |
+| Legal, Regulatory & Financial Readiness | Understanding relevant documentation and official readiness requirements |
+| Local Experience & Professional Networks | Exploring mentorship, career development, and professional connections |
 
----
+## 🛠️ Technology Stack
 
-## Application Architecture
+The project uses the following technologies as documented in its source repository:
 
-The application follows a full-stack architecture.
+| Technology | Purpose |
+|---|---|
+| React 19 | User interface |
+| TypeScript | Application development |
+| Vite | Development and build tooling |
+| Tailwind CSS | Interface styling |
+| Node.js | Server-side runtime |
+| Express | Backend application framework |
+| SQLite | Database |
+| Google Gemini API | AI-assisted analysis |
+| Multer | File upload handling |
+| jsPDF | PDF generation |
+
+## 🏗️ High-Level Architecture
 
 ```mermaid
 flowchart TD
-    A[Candidate / Employer / Administrator]
-    B[React + TypeScript Frontend]
-    C[Express Backend API]
-    D[SQLite Database]
-    E[Private Document Storage]
-    F[Google Gemini API]
-    G[Demo Mode Fallback]
-    H[PDF Portfolio Generator]
-
-    A --> B
-    B --> C
-    C --> D
-    C --> E
-    C --> F
-    F --> G
-    C --> H
+    A[Candidate / User] --> B[React + TypeScript Interface]
+    B --> C[Express Backend]
+    C --> D[SQLite Database]
+    C --> E[Google Gemini API]
+    C --> F[Document Processing]
+    C --> G[PDF Portfolio Generation]
+    E --> H[AI-Assisted Skills Guidance]
+    F --> H
     H --> B
 ```
 
-The frontend communicates with the backend through API routes. Server-side services handle application data, document operations and AI requests.
+## 🇰🇪 Kenyan Recognition Context
 
----
+TalentPath AI is designed with the Kenyan professional and qualifications landscape in mind.
 
-## Getting Started
+Relevant institutions and pathways to explore include:
+
+- **KNQA** — Kenya National Qualifications Authority.
+- **TVETA** — Technical and Vocational Education and Training Authority.
+- **NITA** — National Industrial Training Authority.
+- **EBK** — Engineers Board of Kenya.
+- **Recognition of Prior Learning (RPL)** — A pathway for assessing competencies gained through work and other experience.
+
+TalentPath AI does not issue official qualifications, approve licensing, or replace these institutions.
+
+## 🔐 Responsible AI, Privacy & Trust
+
+Trust is essential when working with personal qualifications and professional documents.
+
+The project follows these important principles:
+
+- AI-generated recommendations are guidance, not official certification.
+- Skills extracted from documents must be distinguished from user-provided claims and AI-generated suggestions.
+- Qualification recognition and professional licensing remain the responsibility of authorised institutions.
+- Legal and financial information should be treated as guidance, not a guarantee of approval.
+- Sample accounts and demonstration opportunities are not verified real-world opportunities.
+- Personal documents should only be shared with appropriate consent and safeguards.
+
+Security and privacy controls should be independently tested before making claims of complete protection.
+
+## 🚀 Getting Started
 
 ### Prerequisites
 
-Install the following:
-
-- Node.js (a version compatible with the project dependencies).
-- npm.
-- Git.
+- Node.js compatible with the project's dependencies.
+- npm or the package manager supported by the repository lockfile.
 - A Google Gemini API key for live AI functionality.
 
-### 1. Clone the repository
+### Installation
+
+Clone the repository:
 
 ```bash
 git clone https://github.com/thesonofbillionairemom-netizen/TalentPathAI.git
-```
-
-### 2. Enter the project directory
-
-```bash
 cd TalentPathAI
 ```
 
-### 3. Install dependencies
+Install dependencies using the package manager configured for the project.
+
+For npm:
 
 ```bash
 npm install
 ```
 
-### 4. Configure environment variables
+Configure the environment variables using the provided `.env.example` file. For example:
 
-Create a local `.env` file using `.env.example` as your reference.
+```env
+GEMINI_API_KEY=your_gemini_api_key
+PORT=3000
+APP_URL=http://localhost:3000
+```
 
-Add your own Gemini API key and other required configuration values.
+Never commit real API keys or secrets to GitHub.
 
-**Never commit `.env` or expose API keys in frontend code.**
+### Run the application
 
-### 5. Start the development server
+Use the development command defined in `package.json`.
 
 ```bash
 npm run dev
 ```
 
-### 6. Build the application
+Build the application:
 
 ```bash
 npm run build
 ```
 
-### 7. Run the production server
+For production startup, use the start script defined in the project configuration.
 
-```bash
-npm start
-```
+> Check the actual scripts and package-manager lockfile in the repository before running these commands. Exact setup requirements may differ by project version.
 
----
+## 📸 Application Preview
 
-## Environment Configuration
+Actual screenshots of the deployed application will be added here.
 
-The project documents the following environment variables:
+Recommended screenshots:
 
-| Variable | Purpose |
-|---|---|
-| `GEMINI_API_KEY` | Server-side Google Gemini API authentication |
-| `APP_URL` | Application base URL |
-| `PORT` | Server listening port; defaults to 3000 |
+- Candidate dashboard.
+- AI skills assessment.
+- Document and evidence centre.
+- Recognition pathway guidance.
+- Professional portfolio.
 
-Use `.env.example` as the configuration reference.
+Screenshots should represent the real application, not generated mock interfaces.
 
-Keep production secrets in the hosting platform's secure environment configuration.
+## 📈 Social Impact
 
----
+TalentPath AI aims to contribute to:
 
-## Demo Experience
+- **SDG 4 — Quality Education:** Supporting skills development and recognition of prior learning.
+- **SDG 8 — Decent Work and Economic Growth:** Helping skilled professionals prepare for employment pathways.
+- **SDG 10 — Reduced Inequalities:** Supporting professional inclusion.
+- **SDG 17 — Partnerships for the Goals:** Encouraging collaboration between employers, institutions, mentors, and support organisations.
 
-The application includes a sample demonstration journey.
+These are intended contributions, not measured impact claims.
 
-The repository documents the following demonstration accounts:
+## 🔭 Future Development Roadmap
 
-| Role | Demo account |
-|---|---|
-| Candidate | `amina.demo@talentpath.example` |
-| Employer / Mentor | `mentor.demo@talentpath.example` |
-| Administrator | `admin.demo@talentpath.example` |
+- Improve AI availability and reliability.
+- Strengthen document extraction and evidence quality.
+- Improve accessibility and user experience.
+- Validate recognition guidance with relevant institutions.
+- Expand skills and career pathway coverage.
+- Develop meaningful employer and mentorship connections.
+- Strengthen privacy, security, and testing.
 
-These are fictional demonstration identities.
+## ⚠️ Project Status & Limitations
 
-The candidate journey uses sample professional information and demonstration evidence to illustrate how the platform is intended to work.
+TalentPath AI is a developing project and should be treated as a prototype.
 
-**Important:** Sample profiles, skills, evidence scores and opportunities are not real refugee records, verified qualifications, confirmed vacancies or actual institutional partnerships.
+- AI analysis depends on external service availability and configuration.
+- Demo Mode may be used when live AI services are unavailable.
+- Suggested skills and career pathways require human review.
+- Demonstration opportunities are not necessarily live vacancies.
+- Official qualification recognition, licensing, work authorisation, and financial approval cannot be guaranteed by the platform.
 
----
+## 👨‍💻 Developer
 
-## Responsible AI and Data Protection
-
-TalentPath AI is an AI-assisted career preparation and information platform.
-
-It does not:
-
-- Officially verify academic qualifications.
-- Award academic or professional certificates.
-- Grant professional licences.
-- Grant immigration or employment authorisation.
-- Guarantee employment, financial services or institutional approval.
-- Replace official assessments by accredited institutions.
-
-AI-generated suggestions must be treated as guidance rather than verified facts.
-
-Candidates should be able to distinguish between:
-
-- Information they personally provided.
-- Information extracted from supporting evidence.
-- AI-generated suggestions.
-- Official recognition or verification issued by authorized institutions.
-
-Personal documents and professional records must be handled with appropriate privacy, security and consent safeguards.
-
----
-
-## Project Scope and Limitations
-
-TalentPath AI is a hackathon-stage application and demonstration platform.
-
-Some features depend on external services, configuration and availability.
-
-In particular:
-
-- Live Gemini analysis requires a working API key and an available supported model.
-- Temporary model-service errors may prevent live assessment and trigger Demo Mode.
-- Demonstration opportunities must not be interpreted as verified live listings.
-- Official recognition and professional registration remain the responsibility of the relevant Kenyan institutions.
-
----
-
-## Future Development
-
-Potential improvements include:
-
-- More robust document extraction and evidence analysis.
-- Transparent and explainable evidence scoring.
-- Improved qualification and occupational-standard mapping.
-- Verified opportunity data integrations.
-- Expanded refugee work-readiness guidance.
-- Stronger employer and mentor collaboration workflows.
-- More comprehensive security testing.
-- Improved accessibility and multilingual support.
-- Automated testing and continuous deployment.
-
----
-
-## Hackathon Alignment
-
-TalentPath AI addresses the three major focus areas of the PLP hackathon concept.
-
-| Focus Area | Platform Contribution |
-|---|---|
-| Credential Recognition and Skills Validation | Skills assessment, evidence organization and RPL preparation |
-| Legal, Regulatory and Financial Access | Legal and financial readiness guidance |
-| Local Experience and Professional Networks | Opportunities, mentorship and professional pathways |
-
-The platform supports the broader goals of:
-
-- **SDG 4:** Quality Education.
-- **SDG 8:** Decent Work and Economic Growth.
-- **SDG 10:** Reduced Inequalities.
-- **SDG 16:** Peace, Justice and Strong Institutions.
-- **SDG 17:** Partnerships for the Goals.
-
----
-
-## Author
-
-**Abdiwali Abdi**  
-Designer & Developer — TalentPath AI
+**Designed and Developed by Abdiwali Abdi**
 
 GitHub: [@thesonofbillionairemom-netizen](https://github.com/thesonofbillionairemom-netizen)
 
-Project Repository: [TalentPathAI](https://github.com/thesonofbillionairemom-netizen/TalentPathAI)
+Project: [TalentPath AI](https://github.com/thesonofbillionairemom-netizen/TalentPathAI)
 
-Live Application: [Launch TalentPath AI](https://talentpath-ai-322874005096.europe-west2.run.app/)
-
----
-
-## License
-
-No license has currently been specified for this repository.
-
-Unless a license is added, the source code should not be assumed to be open for reuse, modification or redistribution.
+Live application: [Open TalentPath AI](https://talentpath-ai-322874005096.europe-west2.run.app/)
 
 ---
 
-**TalentPath AI — Skills recognised. Opportunities unlocked.**
+<p align="center">
+  <strong>Recognise the skills. Unlock the potential. Build the future.</strong>
+  <br/>
+  TalentPath AI
+</p>
