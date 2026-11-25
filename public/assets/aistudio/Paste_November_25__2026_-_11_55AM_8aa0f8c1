@@ -1,0 +1,918 @@
+# TALENTPATH AI
+## COMPLETE PRODUCT, DESIGN, ENGINEERING & DEVELOPMENT SPECIFICATION
+
+**Tagline:** Your skills crossed borders. Your recognition should too.
+
+**Project mission:** Help skilled refugees and displaced professionals turn their existing skills, qualifications and work experience into recognised professional opportunities.
+
+**Initial target market:** Kenya, with potential to expand to other countries.
+
+**Target users:** Skilled refugees, displaced professionals, employers, mentors and administrators.
+
+**Hackathon theme:** Unlocking Displaced Talent: Pathways for Skilled Refugees.
+
+---
+
+# 1. YOUR ROLE AND OBJECTIVE
+
+Act as a senior product architect, full-stack software engineer, AI engineer, database architect, UX/UI designer, cybersecurity engineer and quality assurance specialist.
+
+Your responsibility is to design and build a complete, professional, secure and functional AI-powered web application called TalentPath AI.
+
+This is not merely a landing page or visual prototype.
+
+Build a real application with:
+- Professional user accounts.
+- Persistent database.
+- Secure document uploads.
+- AI-powered skills assessment.
+- Recognition pathway guidance.
+- Legal and financial readiness information.
+- Professional opportunity matching.
+- Portfolio generation.
+- Responsive dashboards.
+- Working navigation and interactions.
+
+The final product must be suitable for a competitive international development and technology hackathon.
+
+Prioritise functionality, accessibility, security, usability and practical impact.
+
+Do not sacrifice reliability for unnecessary visual effects.
+
+# 2. DEVELOPMENT PLATFORM AND CONNECTORS
+
+Use **Lovable** as the primary AI application-building environment.
+
+Use its available integrations and connectors wherever appropriate.
+
+## A. Supabase — primary backend
+
+Connect Supabase to provide:
+
+- PostgreSQL database.
+- User authentication.
+- Registration and login.
+- Logout and password recovery.
+- Persistent user profiles.
+- User-specific application records.
+- Secure document storage.
+- Database relationships.
+- Row Level Security (RLS).
+- Server-side functions.
+- Database migrations.
+
+Use private storage buckets for sensitive documents.
+
+Ensure users can only access their own private information unless they explicitly authorise sharing.
+
+## B. Gemini API — AI engine
+
+Integrate Google's Gemini API for:
+
+- CV analysis.
+- Document information extraction.
+- Skills identification.
+- Transferable skills analysis.
+- Evidence-gap identification.
+- Recognition preparation recommendations.
+- Opportunity matching.
+- Professional portfolio generation.
+
+All AI requests must be handled through secure server-side functions or backend endpoints.
+
+Never expose API keys in frontend code.
+
+Use environment secrets.
+
+If the API key is unavailable, provide a clearly labelled demonstration mode.
+
+Do not pretend that real AI analysis has occurred when the application is operating in demo mode.
+
+## C. GitHub — source code management
+
+Connect the project to GitHub.
+
+Requirements:
+- Synchronise the source code.
+- Maintain a clean project structure.
+- Use meaningful commit messages.
+- Include a README.md.
+- Document setup instructions.
+- Document required environment variables without exposing secret values.
+- Keep the project portable and maintainable outside Lovable.
+
+## D. Email integration — optional
+
+If available within free usage limits, integrate an email service such as Resend.
+
+Possible functions:
+- Registration notifications.
+- Account notifications.
+- Password recovery where supported.
+- Opportunity alerts.
+
+Do not make email integration a blocker for the core MVP.
+
+## E. Additional connectors
+
+Consider useful integrations such as:
+- Official Kenyan qualification-recognition resources.
+- Official employment and professional registration resources.
+- Google Maps for locating relevant institutions.
+- Other verified public information sources.
+
+Only add integrations that provide clear value.
+
+Do not invent connected services or pretend an external service is working when it is not.
+
+## Connector and cost rules
+
+Before connecting external services:
+1. Explain what the connector does.
+2. Identify account and API-key requirements.
+3. Explain free-tier limitations.
+4. Identify potential costs.
+5. Request approval before enabling paid services.
+
+Prefer free and open-source services.
+
+Do not assume that every integration or hosting service is free.
+
+# 3. MAIN APPLICATION MODULES
+
+## Module 1: Professional profiles
+
+Allow users to:
+- Create professional profiles.
+- Add personal and professional information.
+- Record education and qualifications.
+- Add work experience.
+- Record technical and transferable skills.
+- Add languages.
+- State career interests and goals.
+- Edit and update profile information.
+
+Create a professional dashboard showing:
+- Profile completeness ring.
+- Uploaded document count.
+- Identified skills.
+- Evidence-strength indicator.
+- Recognition preparation progress.
+- Recommended next actions.
+- Relevant opportunities.
+
+All information must persist in the database.
+
+## Module 2: Document and evidence management
+
+Allow users to upload:
+- CVs.
+- Academic certificates.
+- Professional certificates.
+- Reference letters.
+- Employment records.
+- Work samples.
+- Training certificates.
+- Other supporting evidence.
+
+Implement:
+- Secure private storage.
+- User-specific access permissions.
+- File type and size validation.
+- Upload progress indicators.
+- Document previews where supported.
+- Document deletion.
+- Document categorisation.
+- Document status tracking.
+
+Extract relevant information from uploaded documents where technically possible.
+
+Identify missing evidence and calculate an evidence-strength indicator.
+
+Never claim that AI has officially verified a document or qualification.
+
+## Module 3: AI skills assessment
+
+Build a functional AI assessment engine.
+
+It must:
+1. Analyse professional experience.
+2. Extract skills from uploaded documents.
+3. Identify transferable skills.
+4. Generate a clear professional skills summary.
+5. Identify missing or weak evidence.
+6. Compare skills with relevant career requirements where reliable information exists.
+7. Recommend practical next steps.
+8. Explain why recommendations were made.
+
+Display results through:
+- Skills tags.
+- Evidence-strength indicators.
+- Skills categories.
+- Missing-evidence warnings.
+- Recommended actions.
+- AI-generated assessment reports.
+
+Clearly distinguish:
+- User-provided information.
+- Information extracted from evidence.
+- AI-generated suggestions.
+- Officially verified information.
+
+Never present an AI assessment as an official qualification verification.
+
+## Module 4: Recognition pathway navigator
+
+Provide guidance on:
+- Recognition of Prior Learning (RPL).
+- Foreign qualification recognition.
+- Competency assessment.
+- Bridging programmes.
+- Professional certification pathways.
+- Relevant Kenyan institutions.
+
+Include official resource links, particularly relevant Kenyan qualification-recognition and RPL resources.
+
+Generate personalised preparation checklists.
+
+Display recognition pathways as a visual timeline.
+
+For every pathway step, show:
+- What the user needs to do.
+- Documents required.
+- Relevant institution or authority.
+- Official resource link.
+- Completion status.
+
+Do not claim that TalentPath AI officially recognises qualifications, issues certificates or grants professional licences.
+
+## Module 5: Legal and financial readiness
+
+Provide general information and checklists covering:
+- Employment documentation.
+- Work authorisation.
+- Employer compliance.
+- Professional registration where applicable.
+- Banking and financial access.
+- Payment readiness.
+- General employment onboarding requirements.
+
+Use reliable official resources.
+
+Explain that legal requirements depend on individual circumstances and applicable laws.
+
+AI guidance is not legal advice.
+
+Do not make definitive decisions about a person's legal status or eligibility to work.
+
+## Module 6: Professional opportunities and mentorship
+
+Create a skills-based opportunity matching interface.
+
+Display:
+- Sample jobs.
+- Mentorship opportunities.
+- Training programmes.
+- Fellowships.
+- Returnships.
+- Professional development opportunities.
+
+Allow users to:
+- Search opportunities.
+- Filter by skills and categories.
+- View opportunity details.
+- Save opportunities.
+- Remove saved opportunities.
+- View matching explanations.
+
+Use realistic demonstration data where live integrations are unavailable.
+
+Clearly label sample opportunities as DEMO DATA.
+
+Never invent real employers, hiring partnerships, mentors, vacancies or placement guarantees.
+
+## Module 7: AI-generated professional portfolio
+
+Generate a structured professional portfolio containing:
+- Professional summary.
+- Education.
+- Employment history.
+- Technical skills.
+- Transferable skills.
+- Supporting evidence.
+- Identified strengths.
+- Evidence gaps.
+- Recommended recognition pathways.
+- Recommended next steps.
+
+Allow users to:
+- Preview the portfolio.
+- Edit relevant information.
+- Generate an updated version.
+- Download a professionally formatted PDF report.
+
+The PDF must be readable, professional and suitable for sharing with potential employers.
+
+# 4. USER ROLES AND ACCESS CONTROL
+
+Create three primary account roles.
+
+**Professional / Candidate**
+- Manage their own profile.
+- Upload and manage documents.
+- Access AI assessments.
+- View recognition pathways.
+- Browse and save opportunities.
+- Generate professional portfolios.
+
+**Employer / Mentor**
+- Create professional accounts.
+- View only candidate information explicitly shared with them.
+- Review shared professional portfolios.
+- Access relevant candidate profiles when permission is granted.
+
+**Administrator**
+- Manage demonstration content.
+- Manage opportunity listings.
+- Review appropriate platform activity.
+- Manage application configuration.
+- View platform-level statistics.
+
+Enforce role-based access on the backend, not merely by hiding frontend buttons.
+
+# 5. VISUAL IDENTITY AND DESIGN SYSTEM
+
+Use these colours as CSS variables and design tokens:
+
+- Midnight Navy: #0B1F3A
+- Navy: #12305A
+- Teal: #0FB5AE
+- Mint: #5ED6CF
+- Amber: #F5A524
+- Cloud: #F6F9FC
+- White: #FFFFFF
+- Slate: #475569
+- Success Green: #16A34A
+- AI Violet: #7C5CFC
+
+**Hero gradient:**
+
+linear-gradient(135deg, #0B1F3A 0%, #12305A 55%, #0FB5AE 130%)
+
+### Trust and transparency badges
+
+- Green: Officially verified.
+- Violet: AI-generated suggestion.
+- Amber: Demo data.
+
+Never use the Officially verified badge for AI-generated results.
+
+### Typography
+
+- Headings: Plus Jakarta Sans.
+- Body: Inter.
+- Large, confident headings.
+- Generous white space.
+- Rounded cards, approximately 16px radius.
+- Subtle shadows.
+- Clear visual hierarchy.
+
+### Icons and charts
+
+- Lucide React.
+- Recharts.
+- Framer Motion.
+
+Design a premium, modern, professional, trustworthy and hopeful SaaS experience.
+
+The application must be mobile-first and fully responsive.
+
+Avoid generic AI-generated template aesthetics.
+
+# 6. ANIMATIONS AND INTERACTIONS
+
+Use Framer Motion for elegant and purposeful animations.
+
+1. Hero headline, subheadline and buttons fade up in sequence.
+2. Soft floating gradient glow behind the hero.
+3. Sections fade and slide up approximately 24px on scroll.
+4. Impact statistics animate when visible.
+5. Cards lift approximately 6px with a subtle teal shadow on hover.
+6. AI assessment displays a document scanning animation.
+7. Skill tags appear one by one after assessment.
+8. Evidence-strength score animates to its result.
+9. Profile completeness rings animate.
+10. Recognition timeline draws step by step.
+11. Buttons display loading states and subtle hover effects.
+12. Page transitions use a quick 200ms fade.
+13. A small confetti animation appears when a portfolio is successfully generated.
+
+Respect prefers-reduced-motion.
+
+Animations must never delay important actions or make the interface difficult to use.
+
+# 7. LANDING PAGE CONTENT
+
+## Hero section
+
+**Headline:** Turn your experience into recognised opportunity.
+
+**Subheadline:** TalentPath AI helps skilled refugees and displaced professionals prove their skills, find recognition pathways in Kenya, and connect with employers and mentors.
+
+Buttons:
+- Build my profile.
+- See how it works.
+
+Under the hero:
+
+AI-assisted guidance. Never a replacement for official certification.
+
+## Problem section
+
+**Headline:** Talent doesn't disappear when people are displaced. The proof does.
+
+Three problem cards:
+
+1. Lost documents — Certificates left behind or difficult to verify.
+2. Unclear pathways — No clear route to qualification recognition.
+3. Closed networks — Limited access to employers, mentors and professional opportunities.
+
+## How it works
+
+1. Build your profile.
+2. Upload your evidence.
+3. Get your AI skills assessment.
+4. Follow your recognition pathway and discover opportunities.
+
+## Features
+
+**AI Skills Assessment:** Discover transferable skills you may not have named yet.
+
+**Evidence Centre:** Securely store documents and identify missing evidence.
+
+**Recognition Navigator:** Personalised RPL preparation checklists with official Kenyan resources.
+
+**Opportunity Match:** Discover relevant jobs, mentors, training and fellowships.
+
+**Professional Portfolio:** Generate a downloadable professional report.
+
+## Responsible AI section
+
+Explain:
+- How AI assists with skills analysis.
+- How uploaded information is handled.
+- How users understand AI-generated recommendations.
+- Why official recognition and human verification remain essential.
+- Why user consent and data protection matter.
+
+## Impact statistics
+
+Use only reliable, traceable figures from official sources such as UNHCR, ILO, UNESCO and relevant Kenyan institutions.
+
+Name the source and provide a link for every statistic.
+
+Never invent statistics.
+
+Label illustrative figures as SAMPLE DATA.
+
+## Closing call to action
+
+**Your next chapter starts with what you already know.**
+
+Button: Start your TalentPath.
+
+# 8. PAGES TO CREATE
+
+Create these complete application pages:
+
+1. Landing page.
+2. Sign-up page.
+3. Login page.
+4. Password recovery page.
+5. Professional dashboard.
+6. Profile management.
+7. Document and evidence centre.
+8. AI skills assessment.
+9. Recognition pathway navigator.
+10. Legal and financial readiness.
+11. Opportunities and mentorship.
+12. Saved opportunities.
+13. Professional portfolio.
+14. User settings.
+15. Employer dashboard.
+16. Administrator dashboard.
+
+Use consistent navigation.
+
+On desktop, provide a professional sidebar for authenticated users.
+
+On mobile, provide responsive navigation.
+
+Every page must have a clear purpose and functional navigation.
+
+# 9. COMPLETE DEMONSTRATION USER JOURNEY
+
+Create a fictional demonstration story.
+
+Example:
+
+A displaced engineer arrives at TalentPath AI with previous engineering experience, incomplete documentation and difficulty demonstrating professional competencies.
+
+Show how the user:
+
+1. Creates a professional profile.
+2. Adds previous education and employment experience.
+3. Uploads sample certificates and work evidence.
+4. Receives an AI-generated skills summary.
+5. Identifies missing supporting evidence.
+6. Receives a recognition preparation checklist.
+7. Views relevant sample opportunities.
+8. Generates a professional portfolio.
+
+Label every fictional profile, uploaded document, opportunity and statistic as SAMPLE DATA or DEMO DATA.
+
+The complete demonstration must work without requiring real refugee information.
+
+# 10. TECHNICAL ARCHITECTURE
+
+### Frontend
+
+- React.
+- TypeScript.
+- Vite or the platform's recommended React setup.
+- Tailwind CSS.
+- Reusable components.
+- Lucide React.
+- Framer Motion.
+- Recharts.
+
+### Backend
+
+- Supabase.
+- PostgreSQL.
+- Supabase Authentication.
+- Supabase Storage.
+- Supabase Edge Functions or another secure server-side API layer.
+
+### AI
+
+- Gemini API.
+- Structured AI outputs.
+- Server-side API calls.
+- Input validation.
+- Error handling.
+
+### Source control
+
+- GitHub integration.
+
+### PDF generation
+
+Use a reliable PDF generation library or service that avoids unnecessary paid subscriptions.
+
+Use a clean and maintainable project structure.
+
+Do not store important user data only in browser localStorage.
+
+Use a persistent database.
+
+# 11. DATABASE STRUCTURE
+
+Design and implement an appropriate relational database.
+
+Include tables such as:
+
+- profiles
+- qualifications
+- work_experience
+- skills
+- documents
+- assessments
+- assessment_results
+- recognition_pathways
+- pathway_steps
+- opportunities
+- saved_opportunities
+- portfolios
+- user_consents
+- notifications
+
+Include:
+- Primary keys.
+- Foreign keys.
+- Timestamps.
+- Validation constraints.
+- Indexes.
+- Relationships.
+- Ownership policies.
+
+Use Supabase Row Level Security.
+
+Users must only access their own private records unless they explicitly share information.
+
+Never expose service-role credentials in frontend code.
+
+Provide database migrations and a safe demonstration-data seeding process.
+
+# 12. AI WORKFLOWS
+
+Create separate AI workflows.
+
+### A. Profile analysis
+
+Input: User profile and employment history.
+
+Output:
+- Professional summary.
+- Skills.
+- Transferable skills.
+- Potential career directions.
+
+### B. Document analysis
+
+Input: User-uploaded document.
+
+Output:
+- Document type.
+- Extracted relevant information.
+- Potential skills.
+- Evidence gaps.
+- Extraction confidence and limitations.
+
+### C. Skills assessment
+
+Input: Profile, work experience and extracted evidence.
+
+Output:
+- Skills assessment.
+- Transferable skills.
+- Evidence-supported competencies.
+- Missing evidence.
+- Suggested next steps.
+
+### D. Recognition preparation
+
+Input: Qualifications, skills, career goals and relevant Kenyan resources.
+
+Output:
+- Possible recognition pathways.
+- Preparation checklist.
+- Supporting evidence requirements.
+- Relevant official resource links.
+
+### E. Opportunity matching
+
+Input: User skills, experience and career goals.
+
+Output:
+- Matching opportunities.
+- Reasons for each match.
+- Skills gaps.
+- Suggested improvements.
+
+### F. Portfolio generation
+
+Input: Confirmed user profile and selected evidence.
+
+Output:
+- Professional summary.
+- Education and work history.
+- Skills.
+- Supporting evidence.
+- Recognition preparation progress.
+- Recommended next steps.
+
+For all AI workflows:
+- Use structured outputs where practical.
+- Validate outputs before displaying them.
+- Handle incomplete documents.
+- Handle API failures.
+- Display loading states.
+- Explain uncertainty.
+- Never fabricate official verification.
+- Never invent legal conclusions.
+- Never guarantee employment or qualification recognition.
+
+# 13. SECURITY, PRIVACY AND RESPONSIBLE AI
+
+This application handles potentially sensitive information.
+
+Implement:
+- Secure authentication.
+- Row Level Security.
+- Private storage buckets.
+- User-specific access permissions.
+- Server-side API key protection.
+- File type and size validation.
+- Input validation.
+- Safe error handling.
+- Protection against unauthorised document access.
+- Secure session management.
+- Explicit consent before sharing candidate information.
+- Appropriate data deletion functionality.
+- Privacy-conscious logging.
+
+Do not use real refugee personal information in demonstration data.
+
+Do not claim TalentPath AI is legally certified, officially approved or partnered with an institution unless independently confirmed.
+
+Clearly separate AI recommendations from official decisions.
+
+# 14. MVP DEVELOPMENT PRIORITIES
+
+Build in this order.
+
+**Phase 1 — Foundation**
+- Project structure.
+- Design system.
+- Landing page.
+- Navigation.
+- Authentication.
+- Supabase connection.
+
+**Phase 2 — Core user experience**
+- Professional profile.
+- Dashboard.
+- Document upload and storage.
+- User-specific database records.
+
+**Phase 3 — AI capabilities**
+- Gemini integration.
+- Document analysis.
+- Skills assessment.
+- Evidence-gap analysis.
+
+**Phase 4 — Recognition and opportunities**
+- Recognition pathway navigator.
+- Official Kenyan resource links.
+- Legal and financial readiness checklists.
+- Opportunity matching.
+- Saved opportunities.
+
+**Phase 5 — Professional portfolio**
+- Portfolio generator.
+- PDF export.
+- Complete demonstration journey.
+
+**Phase 6 — Quality assurance**
+- Security checks.
+- Mobile responsiveness.
+- Error handling.
+- Accessibility.
+- Functional testing.
+- Final demonstration preparation.
+
+Build a reliable working MVP before adding unnecessary advanced features.
+
+# 15. ACCEPTANCE TESTS
+
+The application must pass these tests before being considered demonstrable.
+
+1. A new user can register.
+2. An existing user can log in.
+3. A user can log out.
+4. A user can create and edit their profile.
+5. Profile data persists after refreshing.
+6. A user can upload a permitted document.
+7. A user can view their own uploaded documents.
+8. Another user cannot access that document.
+9. AI assessment can process supported input when the API is configured.
+10. Demo mode is clearly identified when the AI API is unavailable.
+11. Assessment results display skills and evidence gaps.
+12. Recognition pathways display relevant official resources.
+13. Users can browse opportunities.
+14. Users can save and remove opportunities.
+15. Users can generate and download a professional PDF portfolio.
+16. Mobile navigation works.
+17. Forms validate required information.
+18. Loading and error states are visible.
+19. No major button is decorative or non-functional.
+20. No private API key is exposed in frontend code.
+
+# 16. FREE-FIRST DEVELOPMENT AND COST RESTRICTIONS
+
+Use a free-first development strategy.
+
+Before introducing any paid service:
+- Explain why it is needed.
+- Identify a free alternative.
+- Explain pricing and usage limits.
+- Request explicit approval.
+
+Do not activate paid hosting, subscriptions, API billing or premium integrations without permission.
+
+Do not assume free-tier availability.
+
+If a service reaches its free usage limit, display a clear message and provide a fallback where practical.
+
+Keep the application portable so it can be exported and hosted elsewhere.
+
+# 17. DEVELOPMENT WORKFLOW
+
+Work like a professional engineering team.
+
+- Build incrementally.
+- Maintain clean, readable code.
+- Avoid unnecessary dependencies.
+- Use reusable components.
+- Explain major technical decisions in simple language.
+- Test features after implementation.
+- Do not silently remove working functionality.
+- Do not replace real functionality with static mockups.
+- Clearly disclose unfinished features.
+- Maintain a record of completed and outstanding tasks.
+
+Do not generate a large application in one uncontrolled step.
+
+Build and verify each phase.
+
+# 18. DEVELOPER CREDIT AND PERSONAL FOOTER
+
+Add a professional, elegant developer-credit section at the very bottom of the TalentPath AI website footer.
+
+The developer credit must recognise the creator without distracting from the platform's mission.
+
+### Developer information
+
+**Designed & Developed by Abdiwali Abdi**
+
+**GitHub:** thesonofbillionairemom-netizen
+
+GitHub URL:
+https://github.com/thesonofbillionairemom-netizen
+
+**Email:** thesonofbilionairemom@gmail.com
+
+Make the email clickable using a mailto link.
+
+### Design requirements
+
+1. Place the developer credit at the bottom of the existing website footer.
+2. Add a subtle horizontal divider above the developer-credit section.
+3. Use the existing TalentPath AI navy, teal and white palette.
+4. Include appropriate Lucide GitHub and Mail icons.
+5. Make the GitHub username clickable and open the correct profile.
+6. Make the email clickable and open the user's default email application.
+7. Use elegant typography and balanced spacing.
+8. Make the section responsive on mobile, tablet and desktop.
+9. Add subtle hover effects.
+10. Keep the developer credit visually secondary to the TalentPath AI brand.
+
+Do not remove or replace:
+- TalentPath AI branding.
+- Navigation links.
+- Privacy information.
+- Terms and conditions.
+- Responsible AI disclaimer.
+- Qualification-recognition disclaimer.
+- Copyright information.
+
+Use this presentation:
+
+**TalentPath AI**
+
+Your skills crossed borders. Your recognition should too.
+
+Designed & Developed by **Abdiwali Abdi**
+
+GitHub | Email
+
+© 2026 TalentPath AI. All rights reserved.
+
+Do not invent additional developer credentials, professional titles, company affiliations or partnerships.
+
+# 19. FIRST RESPONSE — ARCHITECTURE REVIEW BEFORE BUILDING
+
+Before generating or changing application code, present:
+
+1. Proposed application architecture.
+2. Frontend and backend technologies.
+3. Database structure.
+4. Supabase connector setup requirements.
+5. Gemini API integration requirements.
+6. GitHub integration approach.
+7. Document storage and security design.
+8. Required API keys and environment secrets.
+9. Features that can operate using free services.
+10. Potential costs and free-tier limitations.
+11. Implementation stages.
+12. Security and privacy safeguards.
+13. Main technical limitations and fallback options.
+
+Identify every service that requires manual setup.
+
+Do not make paid-service commitments or activate paid services without my approval.
+
+After presenting the plan, wait for my approval before starting implementation.
+
+---
+
+## FINAL PRODUCT EXPECTATION
+
+My goal is to build a complete, secure, professional, functional and competitive TalentPath AI platform that directly addresses the hackathon theme:
+
+**"Unlocking Displaced Talent: Pathways for Skilled Refugees."**
+
+The final result must demonstrate how AI and technology can help skilled displaced professionals present their abilities, prepare for qualification recognition and access meaningful professional opportunities.
+
+Build a product that solves a real problem, not just a beautiful website.

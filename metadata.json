@@ -1,0 +1,8 @@
+{
+  "name": "TalentPath AI",
+  "description": "AI-assisted skills assessment, qualification recognition pathways in Kenya, and opportunity matching for skilled refugees and displaced professionals.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
