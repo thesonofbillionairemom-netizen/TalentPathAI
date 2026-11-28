@@ -689,3 +689,326 @@ function buildDemoPortfolio(
     ],
   };
 }
+
+// G. Micro-Learning & Local Kenyan Training Recommendations from Progress Chart Skill Gaps
+export interface GapInputItem {
+  skillName: string;
+  currentLevel: number;
+  targetLevel: number;
+  gapAmount: number;
+  kenyaContext?: string;
+}
+
+export interface MicroLearningModule {
+  id: string;
+  title: string;
+  targetSkill: string;
+  estimatedDuration: string;
+  format: string;
+  actionSteps: string[];
+  outcomeArtifact: string;
+}
+
+export interface LocalTrainingResource {
+  id: string;
+  name: string;
+  provider: string;
+  location: string;
+  costNote: string;
+  officialUrl: string;
+  relevantGap: string;
+  whyItHelps: string;
+}
+
+export async function generateMicroLearningRecommendationsWithAI(input: {
+  sectorName: string;
+  location: string;
+  focusSkill?: string;
+  gaps: GapInputItem[];
+  currentSkills: Array<{ name: string; category: string; proficiency: string }>;
+}): Promise<{
+  mode: 'gemini' | 'demo';
+  demoNotice?: string;
+  summary: string;
+  microLearningModules: MicroLearningModule[];
+  localTrainingResources: LocalTrainingResource[];
+}> {
+  const client = getClient();
+  if (!client) {
+    return buildDemoMicroLearningRecommendations(input);
+  }
+
+  try {
+    const response = await client.models.generateContent({
+      model: MODEL_NAME,
+      contents: `A displaced professional in "${input.location || 'Kenya'}" is targeting the "${input.sectorName}" sector.
+Based on their Skills vs. Target Sector progress chart, here are the identified skill gaps (and any selected focus skill: "${input.focusSkill || 'All top gaps'}"):
+${JSON.stringify(input.gaps)}
+Current documented skills: ${JSON.stringify(input.currentSkills)}
+
+Provide:
+1) 3 practical, bite-sized micro-learning modules (30 mins to 3 hours each) the learner can complete independently to build evidence and close the exact gaps above.
+2) 3 specific Kenyan or East African training/recognition resources tailored to their location and sector.
+CRITICAL: Only use real verified URLs from this allowlist:
+- https://www.nita.go.ke (NITA Trade Testing & Industrial Training Centres in Nairobi, Mombasa, Kisumu, Nakuru, Athi River)
+- https://www.tveta.go.ke (TVETA Accredited Technical & Vocational Centres across Kenya)
+- https://app.rpl.knqa.go.ke (KNQA Recognition of Prior Learning Application Portal)
+- https://knqa.go.ke (Kenya National Qualifications Authority)
+- https://www.unesco.org/en/higher-education/qualifications-passport (UNESCO Qualifications Passport in Kenya)
+- https://ajiradigital.go.ke (Ajira Digital Kenya free digital & online work skills centres)
+- https://ebk.or.ke (Engineers Board of Kenya — engineering logbooks & registration)
+- https://www.knec.ac.ke (Kenya National Examinations Council)
+- https://www.ilo.org (ILO East Africa skills & livelihood initiatives)`,
+      config: {
+        systemInstruction: RESPONSIBLE_AI_SYSTEM,
+        thinkingConfig: { thinkingLevel: ThinkingLevel.LOW },
+        responseMimeType: 'application/json',
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            summary: { type: Type.STRING },
+            microLearningModules: {
+              type: Type.ARRAY,
+              items: {
+                type: Type.OBJECT,
+                properties: {
+                  title: { type: Type.STRING },
+                  targetSkill: { type: Type.STRING },
+                  estimatedDuration: { type: Type.STRING },
+                  format: { type: Type.STRING },
+                  actionSteps: { type: Type.ARRAY, items: { type: Type.STRING } },
+                  outcomeArtifact: { type: Type.STRING },
+                },
+                required: ['title', 'targetSkill', 'estimatedDuration', 'format', 'actionSteps', 'outcomeArtifact'],
+              },
+            },
+            localTrainingResources: {
+              type: Type.ARRAY,
+              items: {
+                type: Type.OBJECT,
+                properties: {
+                  name: { type: Type.STRING },
+                  provider: { type: Type.STRING },
+                  location: { type: Type.STRING },
+                  costNote: { type: Type.STRING },
+                  officialUrl: { type: Type.STRING },
+                  relevantGap: { type: Type.STRING },
+                  whyItHelps: { type: Type.STRING },
+                },
+                required: ['name', 'provider', 'location', 'costNote', 'officialUrl', 'relevantGap', 'whyItHelps'],
+              },
+            },
+          },
+          required: ['summary', 'microLearningModules', 'localTrainingResources'],
+        },
+      },
+    });
+
+    const parsed = JSON.parse((response.text ?? '{}').trim());
+    const allowedHosts = new Set([
+      'www.nita.go.ke',
+      'nita.go.ke',
+      'www.tveta.go.ke',
+      'tveta.go.ke',
+      'app.rpl.knqa.go.ke',
+      'knqa.go.ke',
+      'www.unesco.org',
+      'ajiradigital.go.ke',
+      'ebk.or.ke',
+      'www.knec.ac.ke',
+      'www.ilo.org',
+    ]);
+
+    const sanitizeUrl = (raw: unknown): string => {
+      try {
+        const u = new URL(String(raw || ''));
+        if (u.protocol === 'https:' && allowedHosts.has(u.hostname)) {
+          return u.toString();
+        }
+      } catch {
+        // fallback below
+      }
+      return 'https://www.tveta.go.ke';
+    };
+
+    const modules: MicroLearningModule[] = (Array.isArray(parsed.microLearningModules)
+      ? parsed.microLearningModules
+      : []
+    )
+      .slice(0, 3)
+      .map((m: Record<string, unknown>, idx: number) => ({
+        id: `ml-${idx + 1}`,
+        title: String(m.title || 'Focused Competency Sprint'),
+        targetSkill: String(m.targetSkill || input.focusSkill || input.sectorName),
+        estimatedDuration: String(m.estimatedDuration || '60 mins'),
+        format: String(m.format || 'Applied Practice'),
+        actionSteps: Array.isArray(m.actionSteps) ? m.actionSteps.slice(0, 4).map(String) : [],
+        outcomeArtifact: String(m.outcomeArtifact || 'Portfolio-ready evidence sample'),
+      }));
+
+    const resources: LocalTrainingResource[] = (Array.isArray(parsed.localTrainingResources)
+      ? parsed.localTrainingResources
+      : []
+    )
+      .slice(0, 3)
+      .map((r: Record<string, unknown>, idx: number) => ({
+        id: `tr-${idx + 1}`,
+        name: String(r.name || 'Kenyan Accredited Training Pathway'),
+        provider: String(r.provider || 'TVETA / NITA Kenya'),
+        location: String(r.location || input.location || 'Kenya & Online'),
+        costNote: String(r.costNote || 'Check provider portal for current fee or NGO sponsorship'),
+        officialUrl: sanitizeUrl(r.officialUrl),
+        relevantGap: String(r.relevantGap || input.focusSkill || input.sectorName),
+        whyItHelps: String(r.whyItHelps || ''),
+      }));
+
+    return {
+      mode: 'gemini',
+      summary: String(parsed.summary || ''),
+      microLearningModules: modules,
+      localTrainingResources: resources,
+    };
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : 'Gemini request failed';
+    return buildDemoMicroLearningRecommendations(
+      input,
+      `Live Gemini API unavailable (${msg}). Showing Demo Mode Kenyan learning suggestions.`
+    );
+  }
+}
+
+function buildDemoMicroLearningRecommendations(
+  input: {
+    sectorName: string;
+    location: string;
+    focusSkill?: string;
+    gaps: GapInputItem[];
+  },
+  demoNotice = 'GEMINI_API_KEY is not configured. Showing Demo Mode micro-learning and verified Kenyan training directories.'
+) {
+  const location = input.location || 'Nairobi, Kenya';
+  const prioritizedGaps =
+    input.focusSkill
+      ? input.gaps.filter((g) => g.skillName.toLowerCase().includes(input.focusSkill!.toLowerCase()))
+      : input.gaps;
+  const activeGaps = prioritizedGaps.length > 0 ? prioritizedGaps : input.gaps;
+
+  const firstGap = activeGaps[0]?.skillName || `${input.sectorName} Core Competency`;
+  const secondGap = activeGaps[1]?.skillName || 'Kenyan Regulatory & Safety Compliance';
+  const thirdGap = activeGaps[2]?.skillName || 'Portfolio of Evidence Documentation';
+
+  const isDigital =
+    input.sectorName.toLowerCase().includes('software') ||
+    input.sectorName.toLowerCase().includes('digital') ||
+    input.sectorName.toLowerCase().includes('data');
+
+  const isEngineeringOrEnergy =
+    input.sectorName.toLowerCase().includes('renewable') ||
+    input.sectorName.toLowerCase().includes('civil') ||
+    input.sectorName.toLowerCase().includes('construction') ||
+    input.sectorName.toLowerCase().includes('trade');
+
+  const microLearningModules: MicroLearningModule[] = [
+    {
+      id: 'ml-demo-1',
+      title: `Close "${firstGap}" with an Applied Mini-Brief`,
+      targetSkill: firstGap,
+      estimatedDuration: '90 mins',
+      format: 'Hands-On Work Sample',
+      actionSteps: [
+        `Select one real or past project demonstrating ${firstGap} and write a 1-page technical breakdown.`,
+        'Document tools used, Kenyan safety or quality checks applied, and measurable outcomes.',
+        'Save the PDF/TXT summary in your Document Centre under Work Samples.',
+      ],
+      outcomeArtifact: `1-page ${firstGap} Case Sample ready for KNQA RPL or employer screening`,
+    },
+    {
+      id: 'ml-demo-2',
+      title: `Kenya Standards & Compliance Refresher: ${secondGap}`,
+      targetSkill: secondGap,
+      estimatedDuration: '60 mins',
+      format: 'Regulatory Checklist Drill',
+      actionSteps: [
+        `Review Kenyan occupational benchmarks for ${secondGap} (${activeGaps[1]?.kenyaContext || 'TVETA / DOSHS standards'}).`,
+        'Audit one of your past workflows against Kenyan safety, quality, or reporting terminology.',
+        'Update your skill proficiency and evidence note in My Profile once documented.',
+      ],
+      outcomeArtifact: 'Annotated Kenyan compliance checklist & updated skill provenance note',
+    },
+    {
+      id: 'ml-demo-3',
+      title: `Evidence Packaging Sprint for ${thirdGap}`,
+      targetSkill: thirdGap,
+      estimatedDuration: '45 mins',
+      format: 'RPL Portfolio Prep',
+      actionSteps: [
+        'Request a short signed confirmation or reference email from a past supervisor or workshop lead.',
+        'Pair your project summary with any available training records or drawings.',
+        'Run an updated AI Skills Assessment to verify your sector gap reduction.',
+      ],
+      outcomeArtifact: 'Corroborated supervisor reference & stronger Evidence Strength score',
+    },
+  ];
+
+  const localTrainingResources: LocalTrainingResource[] = [
+    ...(isDigital
+      ? [
+          {
+            id: 'tr-demo-ajira',
+            name: 'Ajira Digital Training & Youth/Refugee Digital Centres',
+            provider: 'Ajira Digital Kenya (Ministry of ICT)',
+            location: `${location} & Constituency Digital Centres`,
+            costNote: 'Free structured modules & mentorship cohorts',
+            officialUrl: 'https://ajiradigital.go.ke',
+            relevantGap: firstGap,
+            whyItHelps: 'Offers free practical tracks in data analysis, software tools, and digital workplace readiness across Kenya.',
+          },
+        ]
+      : [
+          {
+            id: 'tr-demo-nita',
+            name: 'NITA Government Trade Tests & Industrial Upskilling',
+            provider: 'National Industrial Training Authority (NITA)',
+            location: 'Nairobi, Mombasa, Kisumu, Nakuru & Athi River Centres',
+            costNote: 'Standard public trade-test fee (NGO subsidies often available)',
+            officialUrl: 'https://www.nita.go.ke',
+            relevantGap: firstGap,
+            whyItHelps: 'Provides practical Grade III–I skills testing and short industrial refresher courses recognized by Kenyan employers.',
+          },
+        ]),
+    {
+      id: 'tr-demo-tveta',
+      name: isEngineeringOrEnergy
+        ? 'TVETA Accredited Renewable Energy & Technical Assessment Centres'
+        : 'TVETA Accredited Competency-Based Training & Assessment Centres',
+      provider: 'TVETA Kenya',
+      location: `${location} & Nationwide`,
+      costNote: 'Varies by accredited public/private TVET centre',
+      officialUrl: 'https://www.tveta.go.ke',
+      relevantGap: secondGap,
+      whyItHelps: 'Helps locate accredited Kenyan centres offering short modular CBET bridging units and practical competency sign-off.',
+    },
+    {
+      id: 'tr-demo-knqa',
+      name: 'KNQA Recognition of Prior Learning (RPL) Assessment Portal',
+      provider: 'Kenya National Qualifications Authority (KNQA)',
+      location: 'Kenya National Online Intake + Accredited Centres',
+      costNote: 'Official public RPL intake guidance & assessment fee schedule',
+      officialUrl: 'https://app.rpl.knqa.go.ke',
+      relevantGap: thirdGap,
+      whyItHelps: `Converts documented field experience in ${input.sectorName} into formal KNQF credit without repeating years of schooling.`,
+    },
+  ];
+
+  return {
+    mode: 'demo' as const,
+    demoNotice,
+    summary:
+      activeGaps.length > 0
+        ? `DEMO PLAN: Focused on closing ${activeGaps.length} gap(s) in ${input.sectorName} using short portfolio sprints and verified Kenyan training centres near ${location}.`
+        : `DEMO PLAN: All core ${input.sectorName} targets are met—use these Kenyan credentialing sprints to formalize your evidence for employers.`,
+    microLearningModules,
+    localTrainingResources,
+  };
+}
+

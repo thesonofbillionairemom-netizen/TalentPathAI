@@ -29,6 +29,7 @@ import {
   generateRecognitionPathwayWithAI,
   matchOpportunitiesWithAI,
   generatePortfolioWithAI,
+  generateMicroLearningRecommendationsWithAI,
 } from './server/gemini.ts';
 
 const app = express();
@@ -757,6 +758,115 @@ app.post('/api/opportunities/match', requireAuth, async (req: AuthedRequest, res
 
   const result = await matchOpportunitiesWithAI({ profile, skills, opportunities });
   res.json(result);
+});
+
+app.post('/api/recommendations/micro-learning', requireAuth, async (req: AuthedRequest, res) => {
+  const { sectorName, focusSkill, gaps } = req.body ?? {};
+  const profile = (db.prepare('SELECT * FROM profiles WHERE user_id = ?').get(req.user!.id) as Record<string, unknown>) || {};
+  const skills = db
+    .prepare('SELECT name, category, proficiency FROM skills WHERE user_id = ?')
+    .all(req.user!.id) as Array<{ name: string; category: string; proficiency: string }>;
+
+  const cleanSector = String(sectorName || profile.target_sector || 'Technical & Professional Services').trim().slice(0, 120);
+  const cleanLocation = String(profile.current_location || 'Nairobi, Kenya').trim().slice(0, 120);
+  const cleanFocus = typeof focusSkill === 'string' && focusSkill.trim() ? focusSkill.trim().slice(0, 120) : undefined;
+
+  const safeGaps = (Array.isArray(gaps) ? gaps : [])
+    .slice(0, 8)
+    .map((g: Record<string, unknown>) => ({
+      skillName: String(g.skillName || g.name || 'Sector Competency').slice(0, 120),
+      currentLevel: Math.max(0, Math.min(100, Number(g.currentLevel ?? 0))),
+      targetLevel: Math.max(0, Math.min(100, Number(g.targetLevel ?? 80))),
+      gapAmount: Math.max(0, Math.min(100, Number(g.gapAmount ?? 0))),
+      kenyaContext: g.kenyaContext ? String(g.kenyaContext).slice(0, 160) : undefined,
+    }));
+
+  const recommendation = await generateMicroLearningRecommendationsWithAI({
+    sectorName: cleanSector,
+    location: cleanLocation,
+    focusSkill: cleanFocus,
+    gaps: safeGaps,
+    currentSkills: skills,
+  });
+
+  res.json(recommendation);
+});
+
+// ==================== KENYAN MENTORS & INDUSTRY PEERS ====================
+app.get('/api/mentors', requireAuth, (req: AuthedRequest, res) => {
+  const mentors = db.prepare(`
+    SELECT
+      m.*,
+      mc.id AS connection_id,
+      mc.status AS connection_status,
+      mc.message AS connection_message,
+      mc.target_sector AS connection_sector,
+      mc.updated_at AS connected_at
+    FROM mentors_peers m
+    LEFT JOIN mentor_connections mc
+      ON mc.mentor_id = m.id AND mc.user_id = ?
+    ORDER BY m.peer_type ASC, m.full_name ASC
+  `).all(req.user!.id);
+
+  res.json({ mentors });
+});
+
+app.post('/api/mentors/:id/connect', requireAuth, (req: AuthedRequest, res) => {
+  const mentorId = String(req.params.id || '').trim();
+  const mentor = db.prepare('SELECT id, full_name, peer_type, sector_label FROM mentors_peers WHERE id = ?').get(mentorId) as {
+    id: string;
+    full_name: string;
+    peer_type: string;
+    sector_label: string;
+  } | undefined;
+
+  if (!mentor) {
+    res.status(404).json({ error: 'Mentor or peer profile not found.' });
+    return;
+  }
+
+  const rawMessage = typeof req.body?.message === 'string' ? req.body.message.trim() : '';
+  const rawSector = typeof req.body?.targetSector === 'string' ? req.body.targetSector.trim() : '';
+  const cleanMessage = rawMessage.slice(0, 400);
+  const cleanSector = (rawSector || mentor.sector_label).slice(0, 120);
+
+  const connectionId = `mconn-${crypto.randomUUID()}`;
+  db.prepare(`
+    INSERT INTO mentor_connections (id, user_id, mentor_id, target_sector, message, status)
+    VALUES (?, ?, ?, ?, ?, 'requested')
+    ON CONFLICT(user_id, mentor_id) DO UPDATE SET
+      target_sector = excluded.target_sector,
+      message = excluded.message,
+      status = 'requested',
+      updated_at = datetime('now')
+  `).run(connectionId, req.user!.id, mentorId, cleanSector, cleanMessage);
+
+  createNotification(
+    req.user!.id,
+    'Connection Interest Sent',
+    `Your introduction request to ${mentor.full_name} (${mentor.sector_label}) has been recorded.`,
+    'info'
+  );
+
+  const connection = db.prepare(
+    'SELECT id, user_id, mentor_id, target_sector, message, status, created_at, updated_at FROM mentor_connections WHERE user_id = ? AND mentor_id = ?'
+  ).get(req.user!.id, mentorId);
+
+  res.status(201).json({ ok: true, connection });
+});
+
+app.delete('/api/mentors/:id/connect', requireAuth, (req: AuthedRequest, res) => {
+  const mentorId = String(req.params.id || '').trim();
+  const info = db
+    .prepare('DELETE FROM mentor_connections WHERE user_id = ? AND mentor_id = ?')
+    .run(req.user!.id, mentorId);
+
+  if (info.changes === 0) {
+    res.status(404).json({ error: 'No active connection request found.' });
+    return;
+  }
+
+  res.json({ ok: true });
 });
 
 // ==================== PROFESSIONAL PORTFOLIO ====================

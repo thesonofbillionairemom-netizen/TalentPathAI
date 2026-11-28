@@ -8,6 +8,7 @@ import type {
   ConsentRecord,
   DocumentRecord,
   EvidenceSummary,
+  MentorPeerRecord,
   NotificationRecord,
   OpportunityRecord,
   PortfolioRecord,
@@ -69,6 +70,7 @@ export default function App() {
     share_documents_summary: 0,
   });
   const [notifications, setNotifications] = useState<NotificationRecord[]>([]);
+  const [mentors, setMentors] = useState<MentorPeerRecord[]>([]);
 
   useEffect(() => {
     apiRequest<{ aiConfigured: boolean }>('/api/health')
@@ -89,6 +91,7 @@ export default function App() {
       portRes,
       consentRes,
       notifRes,
+      mentorsRes,
     ] = await Promise.all([
       apiRequest<{
         profile: ProfileRecord | null;
@@ -104,6 +107,7 @@ export default function App() {
       apiRequest<{ portfolios: PortfolioRecord[] }>('/api/portfolios'),
       apiRequest<{ consent: ConsentRecord }>('/api/settings/consent'),
       apiRequest<{ notifications: NotificationRecord[] }>('/api/notifications'),
+      apiRequest<{ mentors: MentorPeerRecord[] }>('/api/mentors'),
     ]);
 
     setProfile(profileRes.profile);
@@ -119,6 +123,7 @@ export default function App() {
     setPortfolios(portRes.portfolios);
     setConsent(consentRes.consent);
     setNotifications(notifRes.notifications);
+    setMentors(mentorsRes.mentors);
   }, [user]);
 
   const handleAuthenticated = async (authedUser: AuthUser) => {
@@ -240,6 +245,9 @@ export default function App() {
                 latestAssessment={assessments[0] || null}
                 pathways={pathways}
                 opportunities={opportunities}
+                mentors={mentors}
+                shareWithMentors={Boolean(consent.share_with_mentors)}
+                onRefreshWorkspace={() => refreshWorkspace()}
                 onNavigate={handleNavigate}
               />
             )}

@@ -1,17 +1,41 @@
-import { ArrowRight, Briefcase, Compass, FileCheck2, FolderOpen, Sparkles } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import {
+  ArrowRight,
+  Briefcase,
+  Check,
+  Compass,
+  FileCheck2,
+  FileDown,
+  FolderOpen,
+  Sparkles,
+} from 'lucide-react';
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import type {
   AppRoute,
   AssessmentRecord,
   DocumentRecord,
   EvidenceSummary,
+  MentorPeerRecord,
+  MicroLearningRecommendationResponse,
   OpportunityRecord,
   ProfileRecord,
   RecognitionPathwayRecord,
   SkillRecord,
 } from '../types';
+import { CareerRoadmapTimeline } from '../components/CareerRoadmapTimeline';
 import { CompletenessRing } from '../components/MotionPrimitives';
+import { GapLearningRecommendations } from '../components/GapLearningRecommendations';
+import { KenyanMentorsSection } from '../components/KenyanMentorsSection';
+import { SectorSkillGapChart } from '../components/SectorSkillGapChart';
 import { TrustBadge } from '../components/TrustBadge';
+import { apiRequest } from '../lib/api';
+import { exportSkillsGapAndRoadmapPdf } from '../lib/pdfExport';
+import { buildCareerRoadmapPhases } from '../lib/roadmap';
+import {
+  SECTOR_BENCHMARKS,
+  computeSectorSkillComparison,
+  resolveSectorBenchmark,
+} from '../lib/sectorBenchmarks';
 
 interface DashboardPageProps {
   fullName: string;
@@ -22,6 +46,9 @@ interface DashboardPageProps {
   latestAssessment: AssessmentRecord | null;
   pathways: RecognitionPathwayRecord[];
   opportunities: OpportunityRecord[];
+  mentors: MentorPeerRecord[];
+  shareWithMentors: boolean;
+  onRefreshWorkspace: () => Promise<void>;
   onNavigate: (route: AppRoute) => void;
 }
 
@@ -34,9 +61,123 @@ export function DashboardPage({
   latestAssessment,
   pathways,
   opportunities,
+  mentors,
+  shareWithMentors,
+  onRefreshWorkspace,
   onNavigate,
 }: DashboardPageProps) {
   const completeness = profile?.completeness_score ?? 0;
+
+  const resolvedSavedBenchmark = useMemo(
+    () => resolveSectorBenchmark((profile?.target_sector || '').trim(), opportunities),
+    [profile?.target_sector, opportunities]
+  );
+  const [selectedSectorId, setSelectedSectorId] = useState<string>(resolvedSavedBenchmark.id);
+  const [skillScope, setSkillScope] = useState<'all' | 'self_assessed'>('all');
+  const [focusGapSkill, setFocusGapSkill] = useState<string | null>(null);
+  const [learningPlan, setLearningPlan] = useState<MicroLearningRecommendationResponse | null>(null);
+  const [pdfExported, setPdfExported] = useState(false);
+  const pdfTimerRef = useRef<number | null>(null);
+  const learningSectionRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    setSelectedSectorId(resolvedSavedBenchmark.id);
+    setFocusGapSkill(null);
+  }, [resolvedSavedBenchmark.id]);
+
+  useEffect(() => {
+    return () => {
+      if (pdfTimerRef.current !== null) {
+        window.clearTimeout(pdfTimerRef.current);
+      }
+    };
+  }, []);
+
+  const activeBenchmark = useMemo(() => {
+    if (selectedSectorId === resolvedSavedBenchmark.id) return resolvedSavedBenchmark;
+    return SECTOR_BENCHMARKS.find((b) => b.id === selectedSectorId) || resolvedSavedBenchmark;
+  }, [selectedSectorId, resolvedSavedBenchmark]);
+
+  const scopedSkills = useMemo(
+    () => (skillScope === 'self_assessed' ? skills.filter((s) => s.source === 'user_provided') : skills),
+    [skills, skillScope]
+  );
+
+  const gapSummary = useMemo(
+    () =>
+      computeSectorSkillComparison(
+        activeBenchmark,
+        scopedSkills,
+        skillScope === 'self_assessed' ? [] : documents,
+        skillScope === 'self_assessed' ? null : latestAssessment,
+        pathways
+      ),
+    [activeBenchmark, scopedSkills, skillScope, documents, latestAssessment, pathways]
+  );
+
+  const roadmapData = useMemo(
+    () =>
+      buildCareerRoadmapPhases({
+        profile,
+        skills,
+        documents,
+        evidence,
+        pathways,
+        opportunities,
+        gapSummary,
+        skillScope,
+      }),
+    [profile, skills, documents, evidence, pathways, opportunities, gapSummary, skillScope]
+  );
+
+  const handleSectorChange = (nextId: string) => {
+    setSelectedSectorId(nextId);
+    setFocusGapSkill(null);
+  };
+
+  const handleSkillScopeChange = (nextScope: 'all' | 'self_assessed') => {
+    setSkillScope(nextScope);
+    setFocusGapSkill(null);
+  };
+
+  const handleFocusGap = (skillName: string) => {
+    setFocusGapSkill(skillName);
+    learningSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  };
+
+  const handleExportGapRoadmapPdf = () => {
+    exportSkillsGapAndRoadmapPdf({
+      fullName,
+      profile,
+      gapSummary,
+      skillScope,
+      phases: roadmapData.phases,
+      overallTimelineProgress: roadmapData.overallTimelineProgress,
+      learningPlan,
+    });
+    setPdfExported(true);
+    if (pdfTimerRef.current !== null) {
+      window.clearTimeout(pdfTimerRef.current);
+    }
+    pdfTimerRef.current = window.setTimeout(() => {
+      setPdfExported(false);
+    }, 2500);
+  };
+
+  const handleConnectMentor = async (mentorId: string, message: string, targetSector: string) => {
+    await apiRequest(`/api/mentors/${encodeURIComponent(mentorId)}/connect`, {
+      method: 'POST',
+      body: JSON.stringify({ message, targetSector }),
+    });
+    await onRefreshWorkspace();
+  };
+
+  const handleWithdrawMentor = async (mentorId: string) => {
+    await apiRequest(`/api/mentors/${encodeURIComponent(mentorId)}/connect`, {
+      method: 'DELETE',
+    });
+    await onRefreshWorkspace();
+  };
 
   const allSteps = pathways.flatMap((p) => p.steps || []);
   const completedSteps = allSteps.filter((s) => s.status === 'completed').length;
@@ -115,6 +256,23 @@ export function DashboardPage({
           </button>
           <button
             type="button"
+            onClick={handleExportGapRoadmapPdf}
+            className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-[#0B1F3A] hover:bg-slate-50 transition-colors whitespace-nowrap"
+          >
+            {pdfExported ? (
+              <>
+                <Check className="h-4 w-4 text-[#16A34A]" />
+                <span>PDF Downloaded</span>
+              </>
+            ) : (
+              <>
+                <FileDown className="h-4 w-4 text-[#0FB5AE]" />
+                <span>Export Gap & Roadmap PDF</span>
+              </>
+            )}
+          </button>
+          <button
+            type="button"
             onClick={() => onNavigate('portfolio')}
             className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-[#0B1F3A] hover:bg-slate-50 transition-colors whitespace-nowrap"
           >
@@ -182,6 +340,64 @@ export function DashboardPage({
           </p>
         </div>
       </div>
+
+      {/* Target Sector Skill Gap Radar/Bar & Progress Chart */}
+      <SectorSkillGapChart
+        profile={profile}
+        skills={skills}
+        documents={documents}
+        latestAssessment={latestAssessment}
+        pathways={pathways}
+        opportunities={opportunities}
+        onNavigate={onNavigate}
+        controlledSectorId={selectedSectorId}
+        onSectorChange={handleSectorChange}
+        skillScope={skillScope}
+        onSkillScopeChange={handleSkillScopeChange}
+        onFocusGap={handleFocusGap}
+      />
+
+      {/* AI Micro-Learning & Local Kenyan Training Suggestions */}
+      <div ref={learningSectionRef}>
+        <GapLearningRecommendations
+          summary={gapSummary}
+          currentLocation={profile?.current_location || 'Nairobi, Kenya'}
+          focusSkill={focusGapSkill}
+          onSelectFocusSkill={setFocusGapSkill}
+          onNavigate={onNavigate}
+          onPlanChange={setLearningPlan}
+        />
+      </div>
+
+      {/* Career Progression Visual Timeline Roadmap */}
+      <CareerRoadmapTimeline
+        profile={profile}
+        skills={skills}
+        documents={documents}
+        evidence={evidence}
+        pathways={pathways}
+        opportunities={opportunities}
+        gapSummary={gapSummary}
+        skillScope={skillScope}
+        onFocusGap={handleFocusGap}
+        onNavigate={onNavigate}
+        onExportPdf={handleExportGapRoadmapPdf}
+        exportSuccess={pdfExported}
+      />
+
+      {/* Local Mentors & Industry Peers in Kenya */}
+      <KenyanMentorsSection
+        mentors={mentors}
+        loading={false}
+        error={null}
+        gapSummary={gapSummary}
+        skills={skills}
+        userLocation={profile?.current_location || 'Nairobi, Kenya'}
+        shareWithMentors={shareWithMentors}
+        onConnect={handleConnectMentor}
+        onWithdraw={handleWithdrawMentor}
+        onNavigate={onNavigate}
+      />
 
       {/* Main Split: Skills Chart + Recommended Actions */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">

@@ -213,3 +213,64 @@ export interface NotificationRecord {
   is_read: number;
   created_at: string;
 }
+
+export interface MicroLearningModule {
+  id: string;
+  title: string;
+  targetSkill: string;
+  estimatedDuration: string;
+  format: string;
+  actionSteps: string[];
+  outcomeArtifact: string;
+}
+
+export interface LocalTrainingResource {
+  id: string;
+  name: string;
+  provider: string;
+  location: string;
+  costNote: string;
+  officialUrl: string;
+  relevantGap: string;
+  whyItHelps: string;
+}
+
+export interface MicroLearningRecommendationResponse {
+  mode: 'gemini' | 'demo';
+  demoNotice?: string;
+  summary: string;
+  microLearningModules: MicroLearningModule[];
+  localTrainingResources: LocalTrainingResource[];
+}
+
+export interface MentorPeerRecord {
+  id: string;
+  full_name: string;
+  role_title: string;
+  organization: string;
+  peer_type: 'mentor' | 'industry_peer';
+  sector_id: string;
+  sector_label: string;
+  location: string;
+  expertise_json: string;
+  bio: string;
+  availability_note: string;
+  is_demo: number;
+  created_at: string;
+  connection_id?: string | null;
+  connection_status?: 'requested' | 'withdrawn' | null;
+  connection_message?: string | null;
+  connection_sector?: string | null;
+  connected_at?: string | null;
+}
+
+export interface MentorConnectionRecord {
+  id: string;
+  user_id: string;
+  mentor_id: string;
+  target_sector: string;
+  message: string;
+  status: 'requested' | 'withdrawn';
+  created_at: string;
+  updated_at: string;
+}

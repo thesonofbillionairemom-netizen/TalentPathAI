@@ -246,6 +246,36 @@ export function initSchema(): void {
       value TEXT NOT NULL,
       updated_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
+
+    CREATE TABLE IF NOT EXISTS mentors_peers (
+      id TEXT PRIMARY KEY,
+      full_name TEXT NOT NULL,
+      role_title TEXT NOT NULL,
+      organization TEXT NOT NULL,
+      peer_type TEXT NOT NULL CHECK(peer_type IN ('mentor', 'industry_peer')),
+      sector_id TEXT NOT NULL,
+      sector_label TEXT NOT NULL,
+      location TEXT NOT NULL,
+      expertise_json TEXT NOT NULL DEFAULT '[]',
+      bio TEXT NOT NULL,
+      availability_note TEXT NOT NULL,
+      is_demo INTEGER NOT NULL DEFAULT 1,
+      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+    CREATE INDEX IF NOT EXISTS idx_mentors_sector ON mentors_peers(sector_id);
+
+    CREATE TABLE IF NOT EXISTS mentor_connections (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      mentor_id TEXT NOT NULL REFERENCES mentors_peers(id) ON DELETE CASCADE,
+      target_sector TEXT NOT NULL DEFAULT '',
+      message TEXT NOT NULL DEFAULT '',
+      status TEXT NOT NULL DEFAULT 'requested' CHECK(status IN ('requested', 'withdrawn')),
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      updated_at TEXT NOT NULL DEFAULT (datetime('now')),
+      UNIQUE(user_id, mentor_id)
+    );
+    CREATE INDEX IF NOT EXISTS idx_mentor_conn_user ON mentor_connections(user_id);
   `);
 }
 
@@ -638,5 +668,187 @@ export function seedDemoData(): void {
   tx();
 }
 
+export function seedKenyanMentors(): void {
+  const existing = (db.prepare('SELECT COUNT(*) as c FROM mentors_peers').get() as { c: number }).c;
+  if (existing > 0) return;
+
+  const mentors = [
+    [
+      'mentor-ke-1',
+      'Eng. Grace Wanjiku (SAMPLE)',
+      'Lead Solar Microgrid Engineer',
+      'Savannah Distributed Energy Kenya',
+      'mentor',
+      'renewable-civil',
+      'Renewable Energy & Civil Infrastructure',
+      'Nairobi, Kenya',
+      ['Solar PV Microgrid Sizing', 'EPRA T3 Licensing', 'KNQA RPL Portfolio Review', 'Site Safety'],
+      'Licensed Kenyan solar & civil engineer mentoring displaced and transitioning engineers through KNQA RPL portfolios and EPRA compliance.',
+      '2 sessions/month · Virtual or Westlands, Nairobi',
+    ],
+    [
+      'mentor-ke-2',
+      'Samuel Otieno (SAMPLE)',
+      'Civil Site Peer & RPL Graduate',
+      'Turkana Water & Solar Works',
+      'industry_peer',
+      'renewable-civil',
+      'Renewable Energy & Civil Infrastructure',
+      'Kakuma / Nairobi, Kenya',
+      ['AutoCAD Civil 3D', 'BOQ & Costing', 'Solar Borehole Pumping'],
+      'Completed KNQA RPL Level 6 civil & solar certification in 2025; shares practical tips on compiling work drawings and supervisor references.',
+      'Async peer Q&A · WhatsApp / Video check-ins',
+    ],
+    [
+      'mentor-ke-3',
+      'Faith Muthoni (SAMPLE)',
+      'Senior Full-Stack Engineer',
+      'Kilimani Fintech Collective',
+      'mentor',
+      'software-digital',
+      'Software & Digital Operations',
+      'Nairobi, Kenya',
+      ['Software Engineering & Web Systems', 'TypeScript & SQL', 'Technical Interview Prep'],
+      'Engineering manager coaching junior and displaced developers in Kenya on portfolio architecture, code reviews, and remote tech readiness.',
+      '1-on-1 code & CV review · Remote across Kenya',
+    ],
+    [
+      'mentor-ke-4',
+      'Brian Kiprop (SAMPLE)',
+      'Data Operations Analyst',
+      'Rift Valley AgriTech Hub',
+      'industry_peer',
+      'software-digital',
+      'Software & Digital Operations',
+      'Eldoret / Remote, Kenya',
+      ['Data Analysis & SQL', 'Agile Project Delivery', 'ODPC Compliance'],
+      'Transitioned from operations into SQL & analytics through Ajira Digital and local tech meetups; open to peer study sprints.',
+      'Weekly study buddy · Remote',
+    ],
+    [
+      'mentor-ke-5',
+      'Dr. Halima Abdi (SAMPLE)',
+      'Community Health Program Advisor',
+      'Nairobi Urban Health Consortium',
+      'mentor',
+      'healthcare-community',
+      'Healthcare & Community Health',
+      'Nairobi, Kenya',
+      ['Clinical / Public Health Ops', 'DHIS2 & M&E', 'NGO Referral Workflows'],
+      'Public health specialist supporting displaced clinicians and allied health workers navigating Kenyan NGO roles and credential orientation.',
+      '2 slots/month · Nairobi or Zoom',
+    ],
+    [
+      'mentor-ke-6',
+      'Mercy Chebet (SAMPLE)',
+      'Health Informatics Officer',
+      'Nakuru County Outreach Initiative',
+      'industry_peer',
+      'healthcare-community',
+      'Healthcare & Community Health',
+      'Nakuru, Kenya',
+      ['Health Data & KoboToolbox', 'Multilingual Community Outreach', 'IPC Safety'],
+      'Allied health peer working on DHIS2 community monitoring; happy to share local Kenyan M&E templates and interview insights.',
+      'Bi-weekly peer chat · Remote',
+    ],
+    [
+      'mentor-ke-7',
+      'Peter Kamau (SAMPLE)',
+      'Master Electrical & TVET Assessor',
+      'NITA Trade Prep Workshop',
+      'mentor',
+      'construction-trades',
+      'Construction & Skilled Trades (TVET / NITA)',
+      'Nairobi (Industrial Area), Kenya',
+      ['NITA Grade I/II Trade Tests', 'Site Safety & NCA', 'Blueprint Reading'],
+      'Accredited practical trade coach helping experienced artisans prepare for NITA Grade tests and KNQA Recognition of Prior Learning.',
+      'Workshop walkthroughs · Nairobi',
+    ],
+    [
+      'mentor-ke-8',
+      'Hassan Noor (SAMPLE)',
+      'Site Foreman & Plumbing Peer',
+      'Coastal Builders Cooperative',
+      'industry_peer',
+      'construction-trades',
+      'Construction & Skilled Trades (TVET / NITA)',
+      'Mombasa, Kenya',
+      ['Core Trade Execution', 'Artisan Crew Supervision', 'Work Log Documentation'],
+      'Passed NITA Grade II practical assessment using employer work logs; connects peers with coastal contractor networks.',
+      'Weekend phone / site Q&A',
+    ],
+    [
+      'mentor-ke-9',
+      'Beatrice Akinyi (SAMPLE)',
+      'Hospitality Training Lead',
+      'Pwani Inclusive Tourism Guild',
+      'mentor',
+      'hospitality-services',
+      'Hospitality & Multilingual Client Services',
+      'Mombasa, Kenya',
+      ['Guest Experience Ops', 'Shift Supervision', 'HACCP Hygiene Standards'],
+      'Hospitality operations director coaching multilingual professionals for coastal resorts, Nairobi hotels, and international customer desks.',
+      'Monthly mock interviews · Mombasa & Remote',
+    ],
+    [
+      'mentor-ke-10',
+      'Daniel Mwangi (SAMPLE)',
+      'Multilingual CX Team Lead',
+      'Nairobi Shared Services Hub',
+      'industry_peer',
+      'hospitality-services',
+      'Hospitality & Multilingual Client Services',
+      'Nairobi, Kenya',
+      ['CRM & POS Systems', 'Multilingual Support', 'Client Operations'],
+      'Supports multilingual peers moving from hospitality into BPO and remote customer operations across Kenya.',
+      'Peer resume & CRM tips · Remote',
+    ],
+    [
+      'mentor-ke-11',
+      'Caroline Njeri (SAMPLE)',
+      'Humanitarian Supply Chain Manager',
+      'East Africa Relief Logistics',
+      'mentor',
+      'logistics-supply',
+      'Logistics & Humanitarian Supply Chain',
+      'Nairobi, Kenya',
+      ['Inventory & Fleet Control', 'Humanitarian Procurement', 'EAC Customs Compliance'],
+      '10+ years managing Kenyan and regional relief corridors; advises on NGO procurement terminology and fleet leadership.',
+      '2 mentoring calls/month · Nairobi / Remote',
+    ],
+    [
+      'mentor-ke-12',
+      'Yusuf Abdullahi (SAMPLE)',
+      'Warehouse & Stock Coordinator',
+      'Northern Corridor Freight Partners',
+      'industry_peer',
+      'logistics-supply',
+      'Logistics & Humanitarian Supply Chain',
+      'Eldoret / Nakuru, Kenya',
+      ['Spreadsheets & ERP Stock', 'Dispatch Coordination', 'Cargo Safety'],
+      'Logistics peer sharing Excel stock reconciliation workflows and regional transport compliance pointers.',
+      'Peer check-ins · Remote',
+    ],
+  ];
+
+  const stmt = db.prepare(`
+    INSERT OR IGNORE INTO mentors_peers (
+      id, full_name, role_title, organization, peer_type, sector_id, sector_label,
+      location, expertise_json, bio, availability_note, is_demo
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
+  `);
+
+  const tx = db.transaction(() => {
+    for (const row of mentors) {
+      const [id, name, roleTitle, org, peerType, sectorId, sectorLabel, location, expertise, bio, avail] = row as [
+        string, string, string, string, string, string, string, string, string[], string, string
+      ];
+      stmt.run(id, name, roleTitle, org, peerType, sectorId, sectorLabel, location, JSON.stringify(expertise), bio, avail);
+    }
+  });
+  tx();
+}
+
 initSchema();
 seedDemoData();
+seedKenyanMentors();
